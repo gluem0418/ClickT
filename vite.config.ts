@@ -5,6 +5,7 @@ import * as path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/ClickT/', //追加
   plugins: [vue()],
   define: { 'process.env': {} },
   build: {
