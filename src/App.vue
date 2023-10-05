@@ -177,11 +177,13 @@ function startGame() {
   // 終了処理
   setTimeout(() => {
     clearTimeout(timer);
-    isProcessing.value = true;
     img_area.value!.textContent = null;
     msc_back.src = msc_back6;
     msc_back.play();
     gameEnd.value = true;
+    setTimeout(() => {
+      isProcessing.value = true;
+    } ,3000)
   }, end_time)
 };
 // ------------------------------------------------------------
