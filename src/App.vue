@@ -454,13 +454,10 @@ document.onclick = function (e) {
   background-repeat: no-repeat;
   background-position: center top;
   height: 100vh;
-  /* width: 100%; */
-  /* max-width: 1024px; */
-  /* margin: auto; */
   text-align: center;
   background-size: cover;
-  font-family: sans-serif;
-  font-size: 24px;
+  font-family: 'Fourkid', sans-serif;
+  font-size: 26px;
 }
 
 .field:hover {
@@ -523,8 +520,8 @@ progress {
   /* bottom:; */
   padding: 10px 30PX;
   margin: 5px 10px;
-  font-family: fantasy;
-  font-size: 56px;
+  font-family: 'Fourkid', sans-serif;
+  font-size: 60px;
   text-decoration: none;
   color: #FFFF99;
   border-radius: 30px;
@@ -554,7 +551,7 @@ progress {
 }
 
 .end-text {
-  font-size: 56px;
+  font-size: 60px;
   font-weight: bold;
   position: absolute;
   white-space: nowrap;
