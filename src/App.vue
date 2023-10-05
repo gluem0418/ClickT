@@ -9,7 +9,7 @@ import img_back3 from '@/assets/img/back/back3.jpg';
 import img_back4 from '@/assets/img/back/back4.jpg';
 import img_back5 from '@/assets/img/back/back5.jpg';
 const aly_backimg = new Array(
-  img_back1,img_back2,img_back3,img_back4,img_back5)
+  img_back1, img_back2, img_back3, img_back4, img_back5)
 
 // キャラインポート
 import img_boss1 from '@/assets/img/cha/boss1.png';
@@ -30,10 +30,10 @@ import img_cha10 from '@/assets/img/cha/cha10.png';
 import img_cha11 from '@/assets/img/cha/cha11.png';
 import img_cha12 from '@/assets/img/cha/cha12.png';
 const aly_hit = new Array(
-  img_boss1,img_boss2,img_boss3,img_boss4,img_boss5,
-  img_cha1,img_cha2,img_cha3,img_cha4,img_cha5,
-  img_cha6,img_cha7,img_cha8,img_cha9,img_cha10,
-  img_cha11,img_cha12)
+  img_boss1, img_boss2, img_boss3, img_boss4, img_boss5,
+  img_cha1, img_cha2, img_cha3, img_cha4, img_cha5,
+  img_cha6, img_cha7, img_cha8, img_cha9, img_cha10,
+  img_cha11, img_cha12)
 
 // 効果音（文字）インポート
 import img_eft1 from '@/assets/img/effect/eft1.png';
@@ -43,7 +43,7 @@ import img_eft4 from '@/assets/img/effect/eft4.png';
 import img_eft5 from '@/assets/img/effect/eft5.png';
 import img_eft6 from '@/assets/img/effect/eft6.png';
 const aly_imgeft = new Array(
-  img_eft1,img_eft2,img_eft3,img_eft4,img_eft5,img_eft6,)
+  img_eft1, img_eft2, img_eft3, img_eft4, img_eft5, img_eft6,)
 
 // BGMインポート
 import msc_back1 from '@/assets/bgm/back/msc1.mp3';
@@ -51,8 +51,9 @@ import msc_back2 from '@/assets/bgm/back/msc2.mp3';
 import msc_back3 from '@/assets/bgm/back/msc3.mp3';
 import msc_back4 from '@/assets/bgm/back/msc4.mp3';
 import msc_back5 from '@/assets/bgm/back/msc5.mp3';
+import msc_back6 from '@/assets/bgm/back/msc6.mp3';
 const aly_backmsc = new Array(
-  msc_back1,msc_back2,msc_back3,msc_back4,msc_back5)
+  msc_back1, msc_back2, msc_back3, msc_back4, msc_back5)
 
 // 効果音インポート
 import dwn_eft1 from '@/assets/bgm/effect/down/ax-slash-1.mp3';
@@ -65,8 +66,8 @@ import dwn_eft7 from '@/assets/bgm/effect/down/stupid6.mp3';
 import dwn_eft8 from '@/assets/bgm/effect/down/tin1.mp3';
 import dwn_eft9 from '@/assets/bgm/effect/down/trumpet1.mp3';
 const aly_eftdown = new Array(
-  dwn_eft1,dwn_eft2,dwn_eft3,dwn_eft4,dwn_eft5,
-  dwn_eft6,dwn_eft7,dwn_eft8,dwn_eft9)
+  dwn_eft1, dwn_eft2, dwn_eft3, dwn_eft4, dwn_eft5,
+  dwn_eft6, dwn_eft7, dwn_eft8, dwn_eft9)
 // クリック時ハンマー
 import hit_hummer from '@/assets/img/hummer.png';
 // 効果音
@@ -78,24 +79,24 @@ import eft_anpan from '@/assets/img/effect/punch1.gif';
 
 // 出現時間（最大）
 const num_aprMax = new Array(
-  1500,1300,1100,900,700)
+  1500, 1300, 1100, 900, 700)
 // 出現時間（最小）
 const num_aprMin = new Array(
-  800,700,600,500,400)
+  800, 700, 600, 500, 400)
 // 消える時間
 const num_dsplist = new Array(
-  3500,3000,2500,2000,1500)
+  4000, 3500, 3000, 2500, 2000)
 // 大きくなるまでの時間
 const num_extlist = new Array(
-  3000,2500,2000,1500,1000)
+  3500, 3000, 2500, 2000, 1500)
 // ボスの(HP)
 const num_hplist = new Array(
-  2,2,3,3,5)
+  2, 2, 3, 3, 5)
 // ゲームレベル
 const aly_lvl = new Array(
-  "EASY","NORMAL","HARD","VERY HARD","EXTREME")
+  "EASY", "NORMAL", "HARD", "VERY HARD", "EXTREME")
 // ゲーム時間
-const end_time = 60000; 
+const end_time = 60000;
 const int_time = 60;
 // const end_time = 3000; 
 // const int_time = 3;
@@ -107,7 +108,6 @@ const vlm_eft3 = 0.5;
 const vlm_eft4 = 1;
 // 特種技
 const cnt_ult = 10;
-// const img_area = ref<HTMLElement | null>(null);
 const img_area = ref<HTMLDivElement | null>(null);
 
 let isProcessing = ref(true);
@@ -119,30 +119,30 @@ let gameEnd = ref(false);
 
 let msc_back = new Audio();
 let msc_eft1 = new Audio(eft_apr);
-  // msc_eft1.src = eft_apr;
-  msc_eft1.volume = vlm_eft1;
+// msc_eft1.src = eft_apr;
+msc_eft1.volume = vlm_eft1;
 let msc_eft2 = new Audio();
-  msc_eft2.volume = vlm_eft2;
+msc_eft2.volume = vlm_eft2;
 let msc_eft3 = new Audio(eft_hit);
-  // msc_eft3.src = eft_hit; 
-  msc_eft3.volume = vlm_eft3;
+// msc_eft3.src = eft_hit; 
+msc_eft3.volume = vlm_eft3;
 let msc_eft4 = new Audio(eft_anp);
-  // msc_eft4.src = eft_anp;
-  msc_eft4.volume = vlm_eft4;
+// msc_eft4.src = eft_anp;
+msc_eft4.volume = vlm_eft4;
 let aly_hp = new Array(5).fill(0);
 
 // 背景設定
 let num_lvl = 0;
 let img_back = ref("url(" + aly_backimg[num_lvl] + ")");
 // 型の宣言
-let score:number;
-let rdm_time:number;
-let cnt_anpan:number;
-let count :number;
-let timeoutId :number;
+let score: number;
+let rdm_time: number;
+let cnt_anpan: number;
+let count: number;
+let timeoutId: number;
 let num_eft: number;
-let timer :number;
-let num_hit :number;
+let timer: number;
+let num_hit: number;
 
 // ランダム整数取得
 const randRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
@@ -151,7 +151,7 @@ const randRange = (min: number, max: number) => Math.floor(Math.random() * (max 
 // メイン処理
 // ------------------------------------------------------------
 function startGame() {
-// 初期処理
+  // 初期処理
   score = 0;
   num_lvl = 0;
   rdm_time = 0;
@@ -172,14 +172,15 @@ function startGame() {
   // カウントダウン処理
   timeoutId = window.setInterval(countdown, 1000);
   // ランダム表示
-  rdm_time = Math.round(Math.random() * (num_aprMax[num_lvl] - num_aprMin[num_lvl])) + num_aprMin[num_lvl]; 
-  timer = window.setTimeout(hithyoji,rdm_time);
+  rdm_time = Math.round(Math.random() * (num_aprMax[num_lvl] - num_aprMin[num_lvl])) + num_aprMin[num_lvl];
+  timer = window.setTimeout(hithyoji, rdm_time);
   // 終了処理
   setTimeout(() => {
     clearTimeout(timer);
     isProcessing.value = true;
     img_area.value!.textContent = null;
-    msc_back.pause();
+    msc_back.src = msc_back6;
+    msc_back.play();
     gameEnd.value = true;
   }, end_time)
 };
@@ -190,7 +191,7 @@ function countdown() {
   time_bar.value = count;
   time_cnt.value = String(count);
   if (count <= 0) {
-    time_cnt.value = "END";    
+    time_cnt.value = "END";
     clearTimeout(timeoutId);
   }
   count--;
@@ -198,7 +199,7 @@ function countdown() {
 // ------------------------------------------------------------
 // 画像のランダム表示
 // ------------------------------------------------------------
-function hithyoji(){
+function hithyoji() {
   // ランダム画像の選択
   num_hit = Math.floor(Math.random() * aly_hit.length);
   // BODY のノードリストに登録
@@ -208,40 +209,49 @@ function hithyoji(){
   img_hit.style.position = "fixed";
   img_area.value!.appendChild(img_hit);
   // 出現範囲の設定
-  let doc_width = document.body.clientWidth - 200 ;
-  let doc_height= document.body.clientHeight- 150 ;
+  let doc_width = document.body.clientWidth - 200;
+  let doc_height = document.body.clientHeight - 150;
   let xpx = Math.floor(Math.random() * doc_width);
   let ypx = Math.floor(Math.random() * doc_height);
   // 画像の位置
   img_hit.style.left = xpx + "px";
-  img_hit.style.top  = ypx + "px";
+  img_hit.style.top = ypx + "px";
   // フェードインで出現
-  img_hit.animate([{opacity: '0'}, {opacity: '1'}], 500);
+  img_hit.animate([{ opacity: '0' }, { opacity: '1' }], 500);
   // 出現音
   msc_eft1.currentTime = 0;
   msc_eft1.play();
   // 秒後に拡大
-  if (num_hit > 4) {
-    anime({
-      targets: img_hit,
-      scale: 2,
-      delay: num_extlist[num_lvl]
-    });
-    // 消えるまでの時間
-    setTimeout(() => {
-      img_hit.remove();
-    }, num_dsplist[num_lvl]);
-  }
+  anime({
+    targets: img_hit,
+    translateX: [
+      { value: randRange(-50, 50), duration: randRange(500, 1000), delay: randRange(0, 100) },
+      { value: randRange(-50, 50), duration: randRange(500, 1000), delay: randRange(0, 100) },
+      { value: randRange(-50, 50), duration: randRange(500, 1000), delay: randRange(0, 100) }
+    ],
+    translateY: [
+      { value: randRange(-50, 50), duration: randRange(500, 1000), delay: randRange(0, 100) },
+      { value: randRange(-50, 50), duration: randRange(500, 1000), delay: randRange(0, 100) },
+      { value: randRange(-50, 50), duration: randRange(500, 1000), delay: randRange(0, 100) }
+    ],
+    scale: 2,
+    delay: num_extlist[num_lvl]
+  });
+  // 消えるまでの時間
+  setTimeout(() => {
+    img_hit.remove();
+  }, num_dsplist[num_lvl]);
+  // }
   // ランダム表示間隔　取得
-  rdm_time = Math.round(Math.random() * (num_aprMax[num_lvl] - num_aprMin[num_lvl])) + num_aprMin[num_lvl]; 
-  timer = window.setTimeout(hithyoji,rdm_time);
+  rdm_time = Math.round(Math.random() * (num_aprMax[num_lvl] - num_aprMin[num_lvl])) + num_aprMin[num_lvl];
+  timer = window.setTimeout(hithyoji, rdm_time);
   // ------------------------------------------------------------
   // 画像をたたいた時の処理
   // ------------------------------------------------------------
   img_hit.addEventListener('click', (e) => {
     // 叩いた後の演出
     // 効果音
-    // msc_eft2.currentTime = 0;
+    msc_eft2.currentTime = 0;
     msc_eft2.play();
     // 効果音（文字）
     var img_eft = new Image();
@@ -251,8 +261,8 @@ function hithyoji(){
     img_eft.src = aly_imgeft[num_eft];
     img_eft.style.position = "absolute";
     // 出現範囲の設定
-    img_eft.style.left = (e.clientX ) + "px";
-    img_eft.style.top  = (e.clientY - 30) + "px";
+    img_eft.style.left = (e.clientX) + "px";
+    img_eft.style.top = (e.clientY - 30) + "px";
     // 消えるまでの時
     setTimeout(() => {
       img_eft.remove();
@@ -264,12 +274,12 @@ function hithyoji(){
     }
     // 連続ヒットのカウント
     // if (num_hit == id_anpan) {
-      cnt_anpan++;
-      // カウントで特種技
-      if (cnt_anpan == cnt_ult) {
-        fncimgult();
-        cnt_anpan = 0;
-      }
+    cnt_anpan++;
+    // カウントで特種技
+    if (cnt_anpan == cnt_ult) {
+      fncimgult();
+      cnt_anpan = 0;
+    }
     // }
     // 倒した後の処理
     if (num_hit > 4 || aly_hp[num_hit] >= num_hplist[num_hit]) {
@@ -308,7 +318,7 @@ function fncimgult() {
   img_ult.style.position = "fixed";
   document.body.appendChild(img_ult);
   img_ult.style.left = 40 + "px";
-  img_ult.style.top  = 50 + "px";
+  img_ult.style.top = 50 + "px";
   // おたけび
   msc_eft4.play();
   // 効果音
@@ -318,7 +328,7 @@ function fncimgult() {
   setTimeout(() => {
     msc_eft2.play();
     // 全標的を取得
-    let aly_allhit:HTMLCollection
+    let aly_allhit: HTMLCollection
     aly_allhit = img_area.value!.getElementsByTagName('img');
     for (let i = 0; i < aly_allhit.length; i++) {
       anime({
@@ -338,13 +348,6 @@ function fncimgult() {
       fnclvlup1();
     }
   }, 1400);
-    // resolve();
-  // })
-  // 秒後に消える
-  // promise1.then(() => {
-  //   img_area.textContent = null;
-  //   img_ult.remove();
-  // });
   // 秒後に消える
   setTimeout(() => {
     img_area.value!.textContent = null;
@@ -385,7 +388,7 @@ function fnclvlup2() {
 // ------------------------------------------------------------
 // クリック時の処理
 // ------------------------------------------------------------
-document.onclick = function (e){
+document.onclick = function (e) {
   // 叩いた音
   msc_eft3.currentTime = 0;
   msc_eft3.play();
@@ -394,14 +397,13 @@ document.onclick = function (e){
   // ------------------------------------------------------------
   var img_hummer = new Image();
   img_hummer.src = hit_hummer;
-  // img_hummer.style.width = "80px";
   img_hummer.style.position = "fixed";
   document.body.appendChild(img_hummer);
   // ------------------------------------------------------------
   // 画像要素の位置を更新する
   // ------------------------------------------------------------
   img_hummer.style.left = (e.clientX - 40) + "px";
-  img_hummer.style.top  = (e.clientY - 40) + "px";
+  img_hummer.style.top = (e.clientY - 40) + "px";
   // 画像の回転
   anime({
     targets: img_hummer,
@@ -423,24 +425,26 @@ document.onclick = function (e){
   <div class="field" id="field">
     <div class="box1">
       <span>SCORE:</span>
-      <span >{{ scoreText }}</span>
+      <span>{{ scoreText }}</span>
     </div>
     <div class="box1">
       <span>{{ levelText }}</span>
     </div>
     <div class="box2">
       <label>TIME:</label>
-      <output id="time-cnt" :value="time_cnt"></output>
-      <span>　</span>
-      <progress id="time-bar" :value="time_bar" max="60"></progress>
+      <output :value="time_cnt"></output>
+      <span>&nbsp;</span>
+      <progress :value="time_bar" max="60"></progress>
     </div>
-    <button @click="startGame()" class="btn-start" v-show="isProcessing">START</button>
+    <div class="posi-stt">
+      <button @click="startGame()" class="btn-start" v-show="isProcessing">START</button>
+    </div>
     <div class="end-text" id="game-end" v-show="gameEnd">GAME END</div>
-    <div class="end-text" id="score-end" v-show="gameEnd" >
+    <div class="end-text" id="score-end" v-show="gameEnd">
       <span>SCORE:</span>
-      <span >{{ scoreText }}</span>
+      <span>{{ scoreText }}</span>
     </div>
-    <div class="container" id="container" ref="img_area"> </div>
+    <div class="container" ref="img_area"> </div>
   </div>
 </template>
 
@@ -452,99 +456,127 @@ document.onclick = function (e){
   height: 100vh;
   /* width: 100%; */
   /* max-width: 1024px; */
-  margin: auto;
+  /* margin: auto; */
   text-align: center;
-  /* background-attachment: fixed; */
   background-size: cover;
-  font-family: "Comic Sans MS";
+  font-family: sans-serif;
   font-size: 24px;
 }
+
 .field:hover {
   cursor: url(@/assets/img/hummer.cur) 40 40, auto;
 }
+
 .box1 {
-  color: white;
-  background: black;
-  border: solid 4px #fd9535;
+  color: #FFFF99;
+  background: #000050;
+  /* border: solid 4px #fd9535; */
+  border: solid 3px #FFFF99;
   /*丸み*/
-  border-radius: 20px;
+  border-radius: 15px;
   /*角の丸み*/
   float: left;
-  width: 150px;
-  padding: 5px 5px;
-  margin: 5px ;
+  /* width: 150px; */
+  padding: 5px 10px;
+  margin: 5px;
+  animation: slide 2s;
 }
+
 .box2 {
-  color: white;
-  background: black;
-  border: solid 4px #fd9535;
+  color: #FFFF99;
+  background: #000050;
+  border: solid 3px #FFFF99;
   /*線*/
-  border-radius: 20px;
+  border-radius: 15px;
   /*角の丸み*/
   float: left;
-  width: 330px;
-  padding: 5px 5px;
-  margin: 5px
+  /* width: 330px; */
+  padding: 5px 10px;
+  margin: 5px;
+  animation: slide 2.5s;
 }
+
+@keyframes slide {
+  0% {
+    opacity: 0;
+    transform: translateX(500px);
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 progress {
   width: 180px;
   /* background-color: orange; */
 }
-.btn-start {
-  float:right;
-  width:150px;
-  padding: 5px;
-  margin: 5px 10px;
-  font-family: "Comic Sans MS";
-  font-size: 30px;
-  text-decoration: none;
-  color: #FFF;
-  background: #fd9535;
-  border-radius: 6px;
-  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.05);
-  font-weight: bold;
-  border: solid 4px #d27d00;
-  border-bottom: solid 6px saddlebrown;
-  animation: skew 2s;
+
+.posi-stt {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 70%;
+  left: 50%;
 }
 
-.btn-start:active {
-  /*ボタンを押したとき*/
-  -webkit-transform: translateY(4px);
-  transform: translateY(4px);
-  /*下に動く*/
-  border-bottom: none;
-  /*線を消す*/
+.btn-start {
+  /* bottom:; */
+  padding: 10px 30PX;
+  margin: 5px 10px;
+  font-family: fantasy;
+  font-size: 56px;
+  text-decoration: none;
+  color: #FFFF99;
+  border-radius: 30px;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.05);
+  border: solid 5px #101060;
+  border-bottom: solid 10px #101040;
+  animation: skew 3s;
+  background: repeating-linear-gradient(30deg, rgba(40, 0, 240, 1), rgba(128, 66, 180, 1) 36%, rgba(165, 93, 148, 1) 64%, rgba(255, 160, 71, 1));
+  ;
+  -webkit-text-stroke: 2px #000050;
 }
 
 /* CSSアニメーションの設定 */
 @keyframes skew {
   0% {
     opacity: 0;
-    /*初期状態では透明に*/
-    /* transform: scale(4, 1) translate(-100px, 400px); */
-    /* transform: matrix(1, 2, 3, 4, 5, 6) translate(100px, 80px); */
     transform: skew(100deg, 100deg);
   }
+
   100% {
     opacity: 1;
   }
 }
+
+progress {
+  width: 180px
+}
+
 .end-text {
-  font-size: 60px;
-  font-weight:bold;
+  font-size: 56px;
+  font-weight: bold;
   position: absolute;
-	transform: translate(-50%, -50%);
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
 }
 
 #game-end {
-	top: 40%;
-	left: 50%;
+  top: 40%;
+  left: 50%;
+  color: #FFFF99;
+  -webkit-text-stroke: 2px #000050;
 }
+
 #score-end {
- 	top: 60%;
-	left: 50%;
+  top: 52%;
+  left: 50%;
+  color: transparent;
+  background: repeating-linear-gradient(40deg, #B67B03 0.1em, #DAAF08 0.2em, #FEE9A0 0.3em, #DAAF08 0.4em, #B67B03 0.5em);
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 2px #000050;
 }
+
 .container {
   width: 10px;
   height: 10px;
