@@ -140,6 +140,7 @@ let timer: number;
 let num_hit: number;
 
 // ランダム整数取得
+document.onselectstart = () => false;
 const randRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
 
 // ------------------------------------------------------------
@@ -286,7 +287,7 @@ function hithyoji() {
         translateX: randRange(-500, 500),
         translateY: randRange(-500, 500),
         rotate: '1.8turn',
-        // delay:500,
+        scale:[1, 0.4],
         duration: num_aprMax[num_lvl],
         easing: 'easeOutExpo', 
       });
@@ -333,6 +334,7 @@ function fncimgult() {
         translateX: randRange(-500, 500),
         translateY: randRange(-500, 500),
         rotate: '1.8turn',
+        scale:[1, 0.4],
         duration: num_aprMax[num_lvl],
         easing: 'easeOutExpo', 
       });
