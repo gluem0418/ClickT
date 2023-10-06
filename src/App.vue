@@ -58,16 +58,11 @@ const aly_backmsc = new Array(
 // 効果音インポート
 import dwn_eft1 from '@/assets/bgm/effect/down/ax-slash-1.mp3';
 import dwn_eft2 from '@/assets/bgm/effect/down/bomb1.mp3';
-import dwn_eft3 from '@/assets/bgm/effect/down/boyoyon1.mp3';
-import dwn_eft4 from '@/assets/bgm/effect/down/cannon1.mp3';
-import dwn_eft5 from '@/assets/bgm/effect/down/pafu1.mp3';
-import dwn_eft6 from '@/assets/bgm/effect/down/stupid5.mp3';
-import dwn_eft7 from '@/assets/bgm/effect/down/stupid6.mp3';
-import dwn_eft8 from '@/assets/bgm/effect/down/tin1.mp3';
-import dwn_eft9 from '@/assets/bgm/effect/down/trumpet1.mp3';
+import dwn_eft3 from '@/assets/bgm/effect/down/cannon1.mp3';
+import dwn_eft4 from '@/assets/bgm/effect/down/打撃6.mp3';
+import dwn_eft5 from '@/assets/bgm/effect/down/全力で踏み込む.mp3';
 const aly_eftdown = new Array(
-  dwn_eft1, dwn_eft2, dwn_eft3, dwn_eft4, dwn_eft5,
-  dwn_eft6, dwn_eft7, dwn_eft8, dwn_eft9)
+  dwn_eft1, dwn_eft2, dwn_eft3, dwn_eft4, dwn_eft5)
 // クリック時ハンマー
 import hit_hummer from '@/assets/img/hummer.png';
 // 効果音
@@ -285,15 +280,15 @@ function hithyoji() {
     // }
     // 倒した後の処理
     if (num_hit > 4 || aly_hp[num_hit] >= num_hplist[num_hit]) {
-      // 叩いた後の画像
-      // img_hit.src = aly_itai[num_hit];
       // 叩かれた後のアニメーション
       anime({
         targets: img_hit,
         translateX: randRange(-500, 500),
         translateY: randRange(-500, 500),
-        rotate: '1.5turn',
-        duration: num_aprMax[num_lvl]
+        rotate: '1.8turn',
+        // delay:500,
+        duration: num_aprMax[num_lvl],
+        easing: 'easeOutExpo', 
       });
       // 消えるまでの時間
       setTimeout(() => {
@@ -337,8 +332,9 @@ function fncimgult() {
         targets: aly_allhit[i],
         translateX: randRange(-500, 500),
         translateY: randRange(-500, 500),
-        rotate: '1.5turn',
-        duration: num_aprMax[num_lvl]
+        rotate: '1.8turn',
+        duration: num_aprMax[num_lvl],
+        easing: 'easeOutExpo', 
       });
       // スコア加算
       if (Number(aly_allhit[i].id) > 4) {
@@ -412,13 +408,13 @@ document.onclick = function (e) {
     translateX: 0,
     translateY: 30,
     rotate: '-0.3turn',
-    duration: 300,
-    direction: 'normal'
+    duration: 200,
+    // easing: 'easeOutCirc', 
   });
-  // 500ミリ秒後に消える
+  // ミリ秒後に消える
   setTimeout(() => {
     img_hummer.remove();
-  }, 300);
+  }, 250);
 };
 
 </script>
@@ -572,6 +568,7 @@ progress {
   left: 50%;
   color: transparent;
   background: repeating-linear-gradient(40deg, #B67B03 0.1em, #DAAF08 0.2em, #FEE9A0 0.3em, #DAAF08 0.4em, #B67B03 0.5em);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-stroke: 2px #000050;
 }
