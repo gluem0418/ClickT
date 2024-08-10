@@ -1,5 +1,5 @@
 <template>
-  <div class="field">
+  <div class="field" id="field">
     <div class="box1">
       <span>SCORE:</span>
       <span>{{ scoreText }}</span>
@@ -9,36 +9,24 @@
     </div>
     <div class="box2">
       <label>TIME:</label>
-      <output :value="timeCnt"></output>
+      <output :value="time_cnt"></output>
       <span>&nbsp;</span>
-      <progress :value="timeBar" max="60"></progress>
+      <progress :value="time_bar" max="60"></progress>
     </div>
-    <div class="posiStart">
-      <button @click="startGame()" class="btnStart" v-show="isProcessing">START</button>
+    <div class="posi-stt">
+      <button @click="startGame()" class="btn-start" v-show="isProcessing">START</button>
     </div>
-    <div v-show="isGameEnd" class="endText" id="gameEnd">GAME END</div>
-    <div v-show="isGameEnd" class="endText" id="scoreEnd">
+    <div class="end-text" id="game-end" v-show="gameEnd">GAME END</div>
+    <div class="end-text" id="score-end" v-show="gameEnd">
       <span>SCORE:</span>
       <span>{{ scoreText }}</span>
     </div>
-    <div class="container" ref="imgArea">
-      <div v-for="(img, index) in imgGroup" :key="index" class="imgGroup">
-        <img :src="img.src" class="imgHit" :style="{ position: 'fixed', left: img.x + 'px', top: img.y + 'px' }"
-          @click="clickImg(img, $event)" :id=img.id>
-      </div>
-
-      <!-- <img v-for="(img, index) in imgGroup" :key="index" :src="img.src" class="imgGroup"
-        :style="{ position: 'fixed', left: img.x + 'px', top: img.y + 'px' }" @click="clickImg(img, $event)"> -->
-
-      <!-- <img v-for="(img, index) in effectGroup" :key="'eft' + index" :src="img.src" class="effectGroup"
-        :style="{ position: 'fixed', left: img.x + 'px', top: img.y + 'px' }"> -->
-
-    </div>
+    <div class="container" ref="img_area"> </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue';
+import { ref } from 'vue';
 import anime from 'animejs';
 // import anime from 'animejs/lib/anime.es.d.ts';
 // 背景インポート
@@ -68,7 +56,7 @@ import img_cha9 from '@/assets/img/cha/cha9.png';
 import img_cha10 from '@/assets/img/cha/cha10.png';
 import img_cha11 from '@/assets/img/cha/cha11.png';
 import img_cha12 from '@/assets/img/cha/cha12.png';
-const alyHit = new Array(
+const aly_hit = new Array(
   img_boss1, img_boss2, img_boss3, img_boss4, img_boss5,
   img_cha1, img_cha2, img_cha3, img_cha4, img_cha5,
   img_cha6, img_cha7, img_cha8, img_cha9, img_cha10,
@@ -81,7 +69,7 @@ import img_eft3 from '@/assets/img/effect/eft3.png';
 import img_eft4 from '@/assets/img/effect/eft4.png';
 import img_eft5 from '@/assets/img/effect/eft5.png';
 import img_eft6 from '@/assets/img/effect/eft6.png';
-const alyImgEffect = new Array(
+const aly_imgeft = new Array(
   img_eft1, img_eft2, img_eft3, img_eft4, img_eft5, img_eft6,)
 
 // BGMインポート
@@ -91,7 +79,7 @@ import msc_back3 from '@/assets/bgm/back/msc3.mp3';
 import msc_back4 from '@/assets/bgm/back/msc4.mp3';
 import msc_back5 from '@/assets/bgm/back/msc5.mp3';
 import msc_back6 from '@/assets/bgm/back/msc6.mp3';
-const alyBackMusic = new Array(
+const aly_backmsc = new Array(
   msc_back1, msc_back2, msc_back3, msc_back4, msc_back5)
 
 // 効果音インポート
@@ -100,89 +88,83 @@ import dwn_eft2 from '@/assets/bgm/effect/down/bomb1.mp3';
 import dwn_eft3 from '@/assets/bgm/effect/down/cannon1.mp3';
 import dwn_eft4 from '@/assets/bgm/effect/down/打撃6.mp3';
 import dwn_eft5 from '@/assets/bgm/effect/down/全力で踏み込む.mp3';
-const alyEffectDown = new Array(
+const aly_eftdown = new Array(
   dwn_eft1, dwn_eft2, dwn_eft3, dwn_eft4, dwn_eft5)
 // クリック時ハンマー
-import hitHummer from '@/assets/img/hummer.png';
+import hit_hummer from '@/assets/img/hummer.png';
 // 効果音
-import effectApr from '@/assets/bgm/effect/apr1.mp3'; //出現
-import effectHit from '@/assets/bgm/effect/kick-light1.mp3'; //クリック時
-import effectAnp from '@/assets/bgm/effect/anpunch1.mp3'; //アンパンチ
+import eft_apr from '@/assets/bgm/effect/apr1.mp3'; //出現
+import eft_hit from '@/assets/bgm/effect/kick-light1.mp3'; //クリック時
+import eft_anp from '@/assets/bgm/effect/anpunch1.mp3'; //アンパンチ
 //特殊技
-import imgAnpan from '@/assets/img/effect/punch1.gif';
+import eft_anpan from '@/assets/img/effect/punch1.gif';
 
 // 出現時間（最大）
-const numAprMax = new Array(
+const num_aprMax = new Array(
   1500, 1300, 1100, 900, 700)
 // 出現時間（最小）
-const numAprMin = new Array(
+const num_aprMin = new Array(
   800, 700, 600, 500, 400)
 // 消える時間
-const numDsplist = new Array(
+const num_dsplist = new Array(
   4000, 3500, 3000, 2500, 2000)
 // 大きくなるまでの時間
-const numExtlist = new Array(
+const num_extlist = new Array(
   3500, 3000, 2500, 2000, 1500)
 // ボスの(HP)
-const numHplist = new Array(
+const num_hplist = new Array(
   2, 2, 3, 3, 5)
 // ゲームレベル
-const alyLevel = new Array(
+const aly_lvl = new Array(
   "EASY", "NORMAL", "HARD", "VERY HARD", "EXTREME")
 // ゲーム時間
-const endTime = 60000;
-const intTime = 60;
+const end_time = 60000;
+const int_time = 60;
+// const end_time = 3000; 
+// const int_time = 3;
 // エフェクト音量
-const volumeBack = 0.3;
-const volumeEffect1 = 0.5;
-const volumeEffect2 = 1;
-const volumeEffect3 = 0.5;
-const volumeEffect4 = 1;
+const vlm_back = 0.3;
+const vlm_eft1 = 0.5;
+const vlm_eft2 = 1;
+const vlm_eft3 = 0.5;
+const vlm_eft4 = 1;
 // 特種技
-const cntUlt = 10;
+const cnt_ult = 10;
+const img_area = ref<HTMLDivElement | null>(null);
 
-// 画像表示エリア
-const imgArea = ref<HTMLDivElement | null>(null);
+let isProcessing = ref(true);
+let scoreText = ref(0);
+let levelText = ref("EASY");
+let time_cnt = ref("60")
+let time_bar = ref(60)
+let gameEnd = ref(false);
 
-// ターゲッの画像
-const imgGroup = ref<Array<{ id: string, num: number, src: string, x: number, y: number }>>([]);
-
-// エフェクト画像
-const effectGroup = ref<Array<{ id: string, src: string, x: number, y: number }>>([]);
-
-const isProcessing = ref(true);
-const scoreText = ref(0);
-const levelText = ref("EASY");
-const timeCnt = ref("60")
-const timeBar = ref(60)
-const isGameEnd = ref(false);
-
-let backMusic = new Audio();
-let mscEffect1 = new Audio(effectApr);
+let msc_back = new Audio();
+let msc_eft1 = new Audio(eft_apr);
 // msc_eft1.src = eft_apr;
-mscEffect1.volume = volumeEffect1;
-let mscEffect2 = new Audio();
-mscEffect2.volume = volumeEffect2;
-let mscEffect3 = new Audio(effectHit);
+msc_eft1.volume = vlm_eft1;
+let msc_eft2 = new Audio();
+msc_eft2.volume = vlm_eft2;
+let msc_eft3 = new Audio(eft_hit);
 // msc_eft3.src = eft_hit; 
-mscEffect3.volume = volumeEffect3;
-let mscEffect4 = new Audio(effectAnp);
+msc_eft3.volume = vlm_eft3;
+let msc_eft4 = new Audio(eft_anp);
 // msc_eft4.src = eft_anp;
-mscEffect4.volume = volumeEffect4;
-let alyHp = new Array(5).fill(0);
+msc_eft4.volume = vlm_eft4;
+let aly_hp = new Array(5).fill(0);
 
 // 背景設定
-let numLevel = 0;
-let imgBack = ref("url(" + aly_backimg[numLevel] + ")");
+let num_lvl = 0;
+let img_back = ref("url(" + aly_backimg[num_lvl] + ")");
 // 型の宣言
 let score: number;
-let rdmTime: number;
-let cntAnpan: number;
+let rdm_time: number;
+let cnt_anpan: number;
 let count: number;
-let idTimeout: number;
-let numEffect: number;
+let timeoutId: number;
+let num_eft: number;
 let timer: number;
-let numHit: number;
+let num_hit: number;
 
 // ランダム整数取得
 document.onselectstart = () => false;
@@ -194,77 +176,79 @@ const randRange = (min: number, max: number) => Math.floor(Math.random() * (max 
 function startGame() {
   // 初期処理
   score = 0;
-  numLevel = 0;
-  rdmTime = 0;
-  cntAnpan = 0;
-  count = intTime;
-  idTimeout = 0;
+  num_lvl = 0;
+  rdm_time = 0;
+  cnt_anpan = 0;
+  count = int_time;
+  timeoutId = 0;
   isProcessing.value = false;
-  isGameEnd.value = false;
+  gameEnd.value = false;
   scoreText.value = 0;
-  levelText.value = alyLevel[numLevel];
-  numEffect = Math.floor(Math.random() * alyEffectDown.length);
-  mscEffect2.src = alyEffectDown[numEffect];
+  levelText.value = aly_lvl[num_lvl];
+  num_eft = Math.floor(Math.random() * aly_eftdown.length);
+  msc_eft2.src = aly_eftdown[num_eft];
 
-  imgBack.value = "url(" + aly_backimg[numLevel] + ")";
-  backMusic.src = alyBackMusic[numLevel];
-  backMusic.volume = volumeBack;
-  backMusic.play();
+  img_back.value = "url(" + aly_backimg[num_lvl] + ")";
+  msc_back.src = aly_backmsc[num_lvl];
+  msc_back.volume = vlm_back;
+  msc_back.play();
   // カウントダウン処理
-  idTimeout = window.setInterval(countdown, 1000);
+  timeoutId = window.setInterval(countdown, 1000);
   // ランダム表示
-  rdmTime = Math.round(Math.random() * (numAprMax[numLevel] - numAprMin[numLevel])) + numAprMin[numLevel];
-  timer = window.setTimeout(hithyoji, rdmTime);
+  rdm_time = Math.round(Math.random() * (num_aprMax[num_lvl] - num_aprMin[num_lvl])) + num_aprMin[num_lvl];
+  timer = window.setTimeout(hithyoji, rdm_time);
   // 終了処理
   setTimeout(() => {
     clearTimeout(timer);
-    imgArea.value!.textContent = null;
-    backMusic.src = msc_back6;
-    backMusic.play();
-    isGameEnd.value = true;
+    img_area.value!.textContent = null;
+    msc_back.src = msc_back6;
+    msc_back.play();
+    gameEnd.value = true;
     setTimeout(() => {
       isProcessing.value = true;
     }, 3000)
-  }, endTime)
+  }, end_time)
 };
 // ------------------------------------------------------------
 // カウントダウン
 // ------------------------------------------------------------
 function countdown() {
-  timeBar.value = count;
-  timeCnt.value = String(count);
+  time_bar.value = count;
+  time_cnt.value = String(count);
   if (count <= 0) {
-    timeCnt.value = "END";
-    clearTimeout(idTimeout);
+    time_cnt.value = "END";
+    clearTimeout(timeoutId);
   }
   count--;
 }
 // ------------------------------------------------------------
 // 画像のランダム表示
 // ------------------------------------------------------------
-async function hithyoji() {
+function hithyoji() {
   // ランダム画像の選択
-  numHit = Math.floor(Math.random() * alyHit.length);
-  // imgGroupに追加
-  let imgHit = {
-    id: String(Date.now()),
-    num: numHit,
-    src: alyHit[numHit],
-    x: Math.floor(Math.random() * (document.body.clientWidth - 200)),
-    y: Math.floor(Math.random() * (document.body.clientHeight - 150))
-  };
-  imgGroup.value.push(imgHit);
+  num_hit = Math.floor(Math.random() * aly_hit.length);
+  // BODY のノードリストに登録
+  let img_hit = new Image();
+  img_hit.id = String(num_hit);
+  img_hit.src = aly_hit[num_hit];
+  img_hit.style.position = "fixed";
+  img_area.value!.appendChild(img_hit);
+  // 出現範囲の設定
+  let doc_width = document.body.clientWidth - 200;
+  let doc_height = document.body.clientHeight - 150;
+  let xpx = Math.floor(Math.random() * doc_width);
+  let ypx = Math.floor(Math.random() * doc_height);
+  // 画像の位置
+  img_hit.style.left = xpx + "px";
+  img_hit.style.top = ypx + "px";
+  // フェードインで出現
+  img_hit.animate([{ opacity: '0' }, { opacity: '1' }], 500);
   // 出現音
-  mscEffect1.currentTime = 0;
-  mscEffect1.play();
-  // domの更新待ち
-  await nextTick()
+  msc_eft1.currentTime = 0;
+  msc_eft1.play();
   // 秒後に拡大
-  console.log('hithyoji', '#' + String(imgHit.id))
-  console.log('hithyoji', imgArea.value)
-  console.log(document.getElementById(String(imgHit.id)))
   anime({
-    targets: '#' + imgHit.id,
+    targets: img_hit,
     translateX: [
       { value: randRange(-50, 50), duration: randRange(500, 1000), delay: randRange(0, 100) },
       { value: randRange(-50, 50), duration: randRange(500, 1000), delay: randRange(0, 100) },
@@ -276,99 +260,101 @@ async function hithyoji() {
       { value: randRange(-50, 50), duration: randRange(500, 1000), delay: randRange(0, 100) }
     ],
     scale: 2,
-    delay: numExtlist[numLevel]
+    delay: num_extlist[num_lvl]
   });
   // 消えるまでの時間
   setTimeout(() => {
-    // imgHit.remove();
-    imgGroup.value = imgGroup.value.filter(target => target.id !== imgHit.id);
-  }, numDsplist[numLevel]);
+    img_hit.remove();
+  }, num_dsplist[num_lvl]);
   // }
   // ランダム表示間隔　取得
-  rdmTime = Math.round(Math.random() * (numAprMax[numLevel] - numAprMin[numLevel])) + numAprMin[numLevel];
-  timer = window.setTimeout(hithyoji, rdmTime);
-}
-// ------------------------------------------------------------
-// 画像をたたいた時の処理
-// ------------------------------------------------------------
-const clickImg = (imgHit: { id: string, num: number, src: string, x: number, y: number }, event: MouseEvent) => {
-  // 叩いた後の演出
-  // 効果音
-  mscEffect2.currentTime = 0;
-  mscEffect2.play();
-  // 効果音（文字）
-  let imgEffect = {
-    id: String(Date.now()),
-    src: alyImgEffect[Math.floor(Math.random() * alyImgEffect.length)],
-    x: event.clientX,
-    y: event.clientY - 30
-  };
-  effectGroup.value.push(imgEffect);
-
-  setTimeout(() => {
-    // img_eft.remove();
-    effectGroup.value = effectGroup.value.filter(target => target.id !== imgEffect.id);
-  }, 500);
-  // 鬼の場合、HP減
-  if (imgHit.num <= 4) {
-    alyHp[imgHit.num]++;
-  }
-  // 連続ヒットのカウント
-  cntAnpan++;
-  // カウントで特種技
-  if (cntAnpan == cntUlt) {
-    fncimgult();
-    cntAnpan = 0;
-  }
-  // 倒した後の処理
-  if (imgHit.num > 4 || alyHp[imgHit.num] >= numHplist[imgHit.num]) {
-    // 叩かれた後のアニメーション
-    anime({
-      targets: imgHit,
-      translateX: randRange(-500, 500),
-      translateY: randRange(-500, 500),
-      rotate: '1.8turn',
-      scale: [1, 0.4],
-      duration: numAprMax[numLevel],
-      easing: 'easeOutExpo',
-    });
-    // 消えるまでの時間
+  rdm_time = Math.round(Math.random() * (num_aprMax[num_lvl] - num_aprMin[num_lvl])) + num_aprMin[num_lvl];
+  timer = window.setTimeout(hithyoji, rdm_time);
+  // ------------------------------------------------------------
+  // 画像をたたいた時の処理
+  // ------------------------------------------------------------
+  img_hit.addEventListener('click', (e) => {
+    // 叩いた後の演出
+    // 効果音
+    msc_eft2.currentTime = 0;
+    msc_eft2.play();
+    // 効果音（文字）
+    var img_eft = new Image();
+    document.body.appendChild(img_eft);
+    // ランダム画像の選択
+    num_eft = Math.floor(Math.random() * aly_imgeft.length);
+    img_eft.src = aly_imgeft[num_eft];
+    img_eft.style.position = "absolute";
+    // 出現範囲の設定
+    img_eft.style.left = (e.clientX) + "px";
+    img_eft.style.top = (e.clientY - 30) + "px";
+    // 消えるまでの時
     setTimeout(() => {
-      imgGroup.value = imgGroup.value.filter(target => target.id !== imgHit.id);
-      // img_hit.remove();
-    }, numAprMax[numLevel]);
-    // スコア加算
-    if (imgHit.num > 4) {
-      score++;
-    } else {
-      score += numHplist[imgHit.num] * 2;
-      alyHp[imgHit.num] = 0;
+      img_eft.remove();
+    }, 500);
+    // 鬼の場合、HP減
+    num_hit = Number(img_hit.id);
+    if (num_hit <= 4) {
+      aly_hp[num_hit]++;
     }
-    // レベル判定
-    fnclvlup1();
-  }
+    // 連続ヒットのカウント
+    // if (num_hit == id_anpan) {
+    cnt_anpan++;
+    // カウントで特種技
+    if (cnt_anpan == cnt_ult) {
+      fncimgult();
+      cnt_anpan = 0;
+    }
+    // }
+    // 倒した後の処理
+    if (num_hit > 4 || aly_hp[num_hit] >= num_hplist[num_hit]) {
+      // 叩かれた後のアニメーション
+      anime({
+        targets: img_hit,
+        translateX: randRange(-500, 500),
+        translateY: randRange(-500, 500),
+        rotate: '1.8turn',
+        scale: [1, 0.4],
+        duration: num_aprMax[num_lvl],
+        easing: 'easeOutExpo',
+      });
+      // 消えるまでの時間
+      setTimeout(() => {
+        img_hit.remove();
+      }, num_aprMax[num_lvl]);
+      // スコア加算
+      if (num_hit > 4) {
+        score++;
+      } else {
+        score += num_hplist[num_hit] * 2;
+        aly_hp[num_hit] = 0;
+      }
+      // レベル判定
+      fnclvlup1();
+    }
+  })
 }
-
 // ------------------------------------------------------------
 // 特種技
 // ------------------------------------------------------------
 function fncimgult() {
   var img_ult = new Image();
-  img_ult.src = imgAnpan + "?" + (new Date).getTime();
+  img_ult.src = eft_anpan + "?" + (new Date).getTime();
   img_ult.style.position = "fixed";
   document.body.appendChild(img_ult);
   img_ult.style.left = 40 + "px";
   img_ult.style.top = 50 + "px";
   // おたけび
-  mscEffect4.play();
+  msc_eft4.play();
   // 効果音
-  mscEffect2.currentTime = 0;
+  msc_eft2.currentTime = 0;
   // 全標的取得
+  // var promise1 = new Promise(function(resolve, reject) {
   setTimeout(() => {
-    mscEffect2.play();
+    msc_eft2.play();
     // 全標的を取得
     let aly_allhit: HTMLCollection
-    aly_allhit = imgArea.value!.getElementsByTagName('img');
+    aly_allhit = img_area.value!.getElementsByTagName('img');
     for (let i = 0; i < aly_allhit.length; i++) {
       anime({
         targets: aly_allhit[i],
@@ -376,22 +362,22 @@ function fncimgult() {
         translateY: randRange(-500, 500),
         rotate: '1.8turn',
         scale: [1, 0.4],
-        duration: numAprMax[numLevel],
+        duration: num_aprMax[num_lvl],
         easing: 'easeOutExpo',
       });
       // スコア加算
       if (Number(aly_allhit[i].id) > 4) {
         score++;
       } else {
-        score += alyHp[Number(aly_allhit[i].id)] * 2;
-        alyHp[Number(aly_allhit[i].id)] = 0;
+        score += aly_hp[Number(aly_allhit[i].id)] * 2;
+        aly_hp[Number(aly_allhit[i].id)] = 0;
       }
       fnclvlup1();
     }
   }, 1400);
   // 秒後に消える
   setTimeout(() => {
-    imgArea.value!.textContent = null;
+    img_area.value!.textContent = null;
     img_ult.remove();
   }, 2100);
 }
@@ -401,17 +387,17 @@ function fncimgult() {
 function fnclvlup1() {
   scoreText.value = score;
   // レベル判定
-  if (score >= 15 && numLevel == 0) {
-    numLevel = 1;
+  if (score >= 15 && num_lvl == 0) {
+    num_lvl = 1;
     fnclvlup2();
-  } else if (score >= 30 && numLevel == 1) {
-    numLevel = 2;
+  } else if (score >= 30 && num_lvl == 1) {
+    num_lvl = 2;
     fnclvlup2();
-  } else if (score >= 45 && numLevel == 2) {
-    numLevel = 3;
+  } else if (score >= 45 && num_lvl == 2) {
+    num_lvl = 3;
     fnclvlup2();
-  } else if (score >= 60 && numLevel == 3) {
-    numLevel = 4;
+  } else if (score >= 60 && num_lvl == 3) {
+    num_lvl = 4;
     fnclvlup2();
   }
 }
@@ -419,25 +405,25 @@ function fnclvlup1() {
 // レベルアップ時
 // ------------------------------------------------------------
 function fnclvlup2() {
-  imgBack.value = "url(" + aly_backimg[numLevel] + ")";
-  backMusic.src = alyBackMusic[numLevel];
-  backMusic.play()
-  levelText.value = alyLevel[numLevel];
-  numEffect = Math.floor(Math.random() * alyEffectDown.length);
-  mscEffect2.src = alyEffectDown[numEffect];
+  img_back.value = "url(" + aly_backimg[num_lvl] + ")";
+  msc_back.src = aly_backmsc[num_lvl];
+  msc_back.play()
+  levelText.value = aly_lvl[num_lvl];
+  num_eft = Math.floor(Math.random() * aly_eftdown.length);
+  msc_eft2.src = aly_eftdown[num_eft];
 }
 // ------------------------------------------------------------
 // クリック時の処理
 // ------------------------------------------------------------
 document.onclick = function (e) {
   // 叩いた音
-  mscEffect3.currentTime = 0;
-  mscEffect3.play();
+  msc_eft3.currentTime = 0;
+  msc_eft3.play();
   // ------------------------------------------------------------
   // HTMLImageElement オブジェクトを作成する
   // ------------------------------------------------------------
   var img_hummer = new Image();
-  img_hummer.src = hitHummer;
+  img_hummer.src = hit_hummer;
   img_hummer.style.position = "fixed";
   document.body.appendChild(img_hummer);
   // ------------------------------------------------------------
@@ -464,7 +450,7 @@ document.onclick = function (e) {
 
 <style scoped>
 .field {
-  background-image: v-bind(imgBack);
+  background-image: v-bind(img_back);
   background-repeat: no-repeat;
   background-position: center top;
   height: 100vh;
@@ -523,14 +509,14 @@ progress {
   /* background-color: orange; */
 }
 
-.posiStart {
+.posi-stt {
   position: absolute;
   transform: translate(-50%, -50%);
   top: 70%;
   left: 50%;
 }
 
-.btnStart {
+.btn-start {
   /* bottom:; */
   padding: 10px 30PX;
   margin: 5px 10px;
@@ -564,7 +550,7 @@ progress {
   width: 180px
 }
 
-.endText {
+.end-text {
   font-size: 60px;
   font-weight: bold;
   position: absolute;
@@ -572,14 +558,14 @@ progress {
   transform: translate(-50%, -50%);
 }
 
-#gameEnd {
+#game-end {
   top: 40%;
   left: 50%;
   color: #FFFF99;
   -webkit-text-stroke: 2px #000050;
 }
 
-#scoreEnd {
+#score-end {
   top: 52%;
   left: 50%;
   color: transparent;
@@ -593,19 +579,5 @@ progress {
   width: 10px;
   height: 10px;
   display: flex;
-}
-
-.imgGroup {
-  animation: fadeIn 0.5s;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
 }
 </style>

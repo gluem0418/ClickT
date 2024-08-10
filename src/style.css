@@ -1,0 +1,12 @@
+html {
+  user-select: none;
+  overflow: hidden !important;
+  user-select: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
