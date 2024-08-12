@@ -1,5 +1,5 @@
 <template>
-  <div class="field">
+  <div class="field" @click="clickScreen($event)">
     <div class="box1">
       <span>SCORE:</span>
       <span>{{ scoreText }}</span>
@@ -24,22 +24,13 @@
 
     <img v-if="isSpecial" :src="imgAnpan" class="imgSpecial">
 
-    <div class="container" ref="imgArea">
+    <img v-show="isHummer" :src="hitHummer" :style="hummerStyle" class="imgHummer">
 
+    <img v-for="(img, index) in effectGroup" :key="'eft' + index" :src="img.src" :style="img.style">
+
+    <div class="container" ref="imgArea">
       <img v-for="img in imgGroup" :key="img.id" :src="img.src" :style="img.style" :id="'img-' + img.id"
         @click="clickImg(img, $event)" class="imgGroup" />
-
-      <img v-for="(img, index) in effectGroup" :key="'eft' + index" :src="img.src" :style="img.style">
-
-      <!-- <div v-for="(img, index) in imgGroup" :key="index" class="imgGroup">
-        <img :src="img.src" class="imgHit" :style="{ position: 'fixed', left: img.x + 'px', top: img.y + 'px' }"
-          @click="clickImg(img, $event)" :id="'img-' + img.id">
-      </div> -->
-
-      <!-- <img v-for="(img, index) in imgGroup" :key="index" :src="img.src" class="imgGroup"
-        :style="{ position: 'fixed', left: img.x + 'px', top: img.y + 'px' }" @click="clickImg(img, $event)"> -->
-
-
     </div>
   </div>
 </template>
@@ -157,6 +148,9 @@ const imgGroup = ref<Array<{ id: string, num: number, src: string, style: any }>
 // エフェクト画像
 const effectGroup = ref<Array<{ id: string, src: string, style: any }>>([]);
 //const effectGroup = ref<Array<{ id: string, src: string, x: number, y: number }>>([]);
+
+// const hummerStyle = ref({ position: 'fixed', top: '0px', left: '0px' });
+const hummerStyle = ref<any>({ position: 'fixed', top: '0px', left: '0px' });
 
 const isProcessing = ref(true);
 const scoreText = ref(0);
@@ -368,13 +362,8 @@ const clickImg = (imgHit: { id: string, num: number, src: string, style: any }, 
 // ------------------------------------------------------------
 const isSpecial = ref((false))
 function fncimgult() {
+  //特殊技を表示
   isSpecial.value = true
-  // var img_ult = new Image();
-  // img_ult.src = imgAnpan + "?" + (new Date).getTime();
-  // img_ult.style.position = "fixed";
-  // document.body.appendChild(img_ult);
-  // img_ult.style.left = 40 + "px";
-  // img_ult.style.top = 50 + "px";
   // おたけび
   mscEffect4.play();
   // 効果音
@@ -409,9 +398,6 @@ function fncimgult() {
   setTimeout(() => {
     isSpecial.value = false
     imgGroup.value = []
-    // imgArea.value!.textContent = null;
-    // img_ult.remove();
-    // }, 2100);
   }, 1600);
 }
 // ------------------------------------------------------------
@@ -448,34 +434,34 @@ function fnclvlup2() {
 // ------------------------------------------------------------
 // クリック時の処理
 // ------------------------------------------------------------
-document.onclick = function (e) {
+const isHummer = ref(false)
+// const hummerId = ref()
+function clickScreen(event: MouseEvent) {
   // 叩いた音
   mscEffect3.currentTime = 0;
   mscEffect3.play();
-  // ------------------------------------------------------------
-  // HTMLImageElement オブジェクトを作成する
-  // ------------------------------------------------------------
-  var img_hummer = new Image();
-  img_hummer.src = hitHummer;
-  img_hummer.style.position = "fixed";
-  document.body.appendChild(img_hummer);
-  // ------------------------------------------------------------
-  // 画像要素の位置を更新する
-  // ------------------------------------------------------------
-  img_hummer.style.left = (e.clientX - 40) + "px";
-  img_hummer.style.top = (e.clientY - 40) + "px";
+  //ハンマーを表示
+  console.log('clickScreen', event.clientX, event.clientY)
+  hummerStyle.value = { position: 'fixed', top: event.clientY - 40 + `px`, left: event.clientX - 40 + `px` };
+  isHummer.value = true
   // 画像の回転
   anime({
-    targets: img_hummer,
-    translateX: 0,
+    targets: '.imgHummer',
     translateY: 30,
     rotate: '-0.3turn',
     duration: 200,
-    // easing: 'easeOutCirc', 
+    easing: 'easeOutElastic',
+    complete: function () { //callback関数
+      anime.set('.imgHummer', {
+        translateY: 0,
+        rotate: 0,
+      });
+    }
   });
   // ミリ秒後に消える
   setTimeout(() => {
-    img_hummer.remove();
+    isHummer.value = false
+    // img_hummer.remove();
   }, 250);
 };
 
