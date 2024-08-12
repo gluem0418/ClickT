@@ -21,17 +21,24 @@
       <span>SCORE:</span>
       <span>{{ scoreText }}</span>
     </div>
+
+    <img v-if="isSpecial" :src="imgAnpan" class="imgSpecial">
+
     <div class="container" ref="imgArea">
-      <div v-for="(img, index) in imgGroup" :key="index" class="imgGroup">
+
+      <img v-for="img in imgGroup" :key="img.id" :src="img.src" :style="img.style" :id="'img-' + img.id"
+        @click="clickImg(img, $event)" class="imgGroup" />
+
+      <img v-for="(img, index) in effectGroup" :key="'eft' + index" :src="img.src" :style="img.style">
+
+      <!-- <div v-for="(img, index) in imgGroup" :key="index" class="imgGroup">
         <img :src="img.src" class="imgHit" :style="{ position: 'fixed', left: img.x + 'px', top: img.y + 'px' }"
-          @click="clickImg(img, $event)" :id=img.id>
-      </div>
+          @click="clickImg(img, $event)" :id="'img-' + img.id">
+      </div> -->
 
       <!-- <img v-for="(img, index) in imgGroup" :key="index" :src="img.src" class="imgGroup"
         :style="{ position: 'fixed', left: img.x + 'px', top: img.y + 'px' }" @click="clickImg(img, $event)"> -->
 
-      <!-- <img v-for="(img, index) in effectGroup" :key="'eft' + index" :src="img.src" class="effectGroup"
-        :style="{ position: 'fixed', left: img.x + 'px', top: img.y + 'px' }"> -->
 
     </div>
   </div>
@@ -145,10 +152,11 @@ const cntUlt = 10;
 const imgArea = ref<HTMLDivElement | null>(null);
 
 // ターゲッの画像
-const imgGroup = ref<Array<{ id: string, num: number, src: string, x: number, y: number }>>([]);
+const imgGroup = ref<Array<{ id: string, num: number, src: string, style: any }>>([]);
 
 // エフェクト画像
-const effectGroup = ref<Array<{ id: string, src: string, x: number, y: number }>>([]);
+const effectGroup = ref<Array<{ id: string, src: string, style: any }>>([]);
+//const effectGroup = ref<Array<{ id: string, src: string, x: number, y: number }>>([]);
 
 const isProcessing = ref(true);
 const scoreText = ref(0);
@@ -250,21 +258,22 @@ async function hithyoji() {
     id: String(Date.now()),
     num: numHit,
     src: alyHit[numHit],
-    x: Math.floor(Math.random() * (document.body.clientWidth - 200)),
-    y: Math.floor(Math.random() * (document.body.clientHeight - 150))
+    style: {
+      position: 'fixed',
+      left: Math.floor(Math.random() * (document.body.clientWidth - 200)) + 'px',
+      top: Math.floor(Math.random() * (document.body.clientHeight - 150)) + 'px'
+    }
   };
+  console.log('hithyoji', imgHit)
   imgGroup.value.push(imgHit);
   // 出現音
   mscEffect1.currentTime = 0;
   mscEffect1.play();
   // domの更新待ち
   await nextTick()
-  // 秒後に拡大
-  console.log('hithyoji', '#' + String(imgHit.id))
-  console.log('hithyoji', imgArea.value)
-  console.log(document.getElementById(String(imgHit.id)))
+  // ?秒後に拡大
   anime({
-    targets: '#' + imgHit.id,
+    targets: `#img-${imgHit.id}`,
     translateX: [
       { value: randRange(-50, 50), duration: randRange(500, 1000), delay: randRange(0, 100) },
       { value: randRange(-50, 50), duration: randRange(500, 1000), delay: randRange(0, 100) },
@@ -291,7 +300,7 @@ async function hithyoji() {
 // ------------------------------------------------------------
 // 画像をたたいた時の処理
 // ------------------------------------------------------------
-const clickImg = (imgHit: { id: string, num: number, src: string, x: number, y: number }, event: MouseEvent) => {
+const clickImg = (imgHit: { id: string, num: number, src: string, style: any }, event: MouseEvent) => {
   // 叩いた後の演出
   // 効果音
   mscEffect2.currentTime = 0;
@@ -300,10 +309,15 @@ const clickImg = (imgHit: { id: string, num: number, src: string, x: number, y: 
   let imgEffect = {
     id: String(Date.now()),
     src: alyImgEffect[Math.floor(Math.random() * alyImgEffect.length)],
-    x: event.clientX,
-    y: event.clientY - 30
+    style: {
+      position: 'absolute',
+      left: event.clientX + 'px',
+      top: event.clientY - 30 + 'px'
+    }
   };
   effectGroup.value.push(imgEffect);
+
+  console.log('clickImg', imgEffect)
 
   setTimeout(() => {
     // img_eft.remove();
@@ -324,7 +338,7 @@ const clickImg = (imgHit: { id: string, num: number, src: string, x: number, y: 
   if (imgHit.num > 4 || alyHp[imgHit.num] >= numHplist[imgHit.num]) {
     // 叩かれた後のアニメーション
     anime({
-      targets: imgHit,
+      targets: `#img-${imgHit.id}`,
       translateX: randRange(-500, 500),
       translateY: randRange(-500, 500),
       rotate: '1.8turn',
@@ -352,13 +366,15 @@ const clickImg = (imgHit: { id: string, num: number, src: string, x: number, y: 
 // ------------------------------------------------------------
 // 特種技
 // ------------------------------------------------------------
+const isSpecial = ref((false))
 function fncimgult() {
-  var img_ult = new Image();
-  img_ult.src = imgAnpan + "?" + (new Date).getTime();
-  img_ult.style.position = "fixed";
-  document.body.appendChild(img_ult);
-  img_ult.style.left = 40 + "px";
-  img_ult.style.top = 50 + "px";
+  isSpecial.value = true
+  // var img_ult = new Image();
+  // img_ult.src = imgAnpan + "?" + (new Date).getTime();
+  // img_ult.style.position = "fixed";
+  // document.body.appendChild(img_ult);
+  // img_ult.style.left = 40 + "px";
+  // img_ult.style.top = 50 + "px";
   // おたけび
   mscEffect4.play();
   // 効果音
@@ -388,12 +404,15 @@ function fncimgult() {
       }
       fnclvlup1();
     }
-  }, 1400);
+  }, 1200);
   // 秒後に消える
   setTimeout(() => {
-    imgArea.value!.textContent = null;
-    img_ult.remove();
-  }, 2100);
+    isSpecial.value = false
+    imgGroup.value = []
+    // imgArea.value!.textContent = null;
+    // img_ult.remove();
+    // }, 2100);
+  }, 1600);
 }
 // ------------------------------------------------------------
 // レベル判定
@@ -607,5 +626,13 @@ progress {
   to {
     opacity: 1;
   }
+}
+
+.imgSpecial {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
 }
 </style>
