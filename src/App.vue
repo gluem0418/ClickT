@@ -1,25 +1,38 @@
 <template>
   <div class="field" @click="clickScreen($event)">
+
     <div class="box1">
       <span>SCORE:</span>
       <span>{{ scoreText }}</span>
     </div>
+
     <div class="box1">
       <span>{{ levelText }}</span>
     </div>
+
     <div class="box2">
       <label>TIME:</label>
       <output :value="timeCnt"></output>
       <span>&nbsp;</span>
       <progress :value="timeBar" max="60"></progress>
     </div>
-    <div class="posiStart">
-      <button @click="startGame()" class="btnStart" v-show="isProcessing">START</button>
+
+    <div v-if="isProcessing" class="posiStart">
+      <button @click="startGame()" class="btnStart">START</button>
     </div>
-    <div v-show="isGameEnd" class="endText" id="gameEnd">GAME END</div>
-    <div v-show="isGameEnd" class="endText" id="scoreEnd">
-      <span>SCORE:</span>
-      <span>{{ scoreText }}</span>
+
+    <div v-if="isGameEnd">
+      <div class="endText" id="gameEnd">GAME END</div>
+      <div class="endText" id="scoreEnd">
+        <span>SCORE:</span>
+        <span>{{ scoreText }}</span>
+      </div>
+    </div>
+
+
+    <div class="container" ref="imgArea">
+      <img v-for="img in imgGroup" :key="img.id" :src="img.src" :style="img.style" :id="'img-' + img.id"
+        @click="clickImg(img, $event)" class="imgGroup" />
     </div>
 
     <img v-if="isSpecial" :src="imgAnpan" class="imgSpecial">
@@ -28,17 +41,13 @@
 
     <img v-for="(img, index) in effectGroup" :key="'eft' + index" :src="img.src" :style="img.style">
 
-    <div class="container" ref="imgArea">
-      <img v-for="img in imgGroup" :key="img.id" :src="img.src" :style="img.style" :id="'img-' + img.id"
-        @click="clickImg(img, $event)" class="imgGroup" />
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+
 import { ref, nextTick } from 'vue';
 import anime from 'animejs';
-// import anime from 'animejs/lib/anime.es.d.ts';
 // 背景インポート
 import img_back1 from '@/assets/img/back/back1.jpg';
 import img_back2 from '@/assets/img/back/back2.jpg';
@@ -147,9 +156,8 @@ const imgGroup = ref<Array<{ id: string, num: number, src: string, style: any }>
 
 // エフェクト画像
 const effectGroup = ref<Array<{ id: string, src: string, style: any }>>([]);
-//const effectGroup = ref<Array<{ id: string, src: string, x: number, y: number }>>([]);
 
-// const hummerStyle = ref({ position: 'fixed', top: '0px', left: '0px' });
+// ハンマー画像
 const hummerStyle = ref<any>({ position: 'fixed', top: '0px', left: '0px' });
 
 const isProcessing = ref(true);
@@ -161,21 +169,18 @@ const isGameEnd = ref(false);
 
 let backMusic = new Audio();
 let mscEffect1 = new Audio(effectApr);
-// msc_eft1.src = eft_apr;
 mscEffect1.volume = volumeEffect1;
 let mscEffect2 = new Audio();
 mscEffect2.volume = volumeEffect2;
 let mscEffect3 = new Audio(effectHit);
-// msc_eft3.src = eft_hit; 
 mscEffect3.volume = volumeEffect3;
 let mscEffect4 = new Audio(effectAnp);
-// msc_eft4.src = eft_anp;
 mscEffect4.volume = volumeEffect4;
 let alyHp = new Array(5).fill(0);
 
 // 背景設定
 let numLevel = 0;
-let imgBack = ref("url(" + aly_backimg[numLevel] + ")");
+const imgBack = ref("url(" + aly_backimg[numLevel] + ")");
 // 型の宣言
 let score: number;
 let rdmTime: number;
@@ -187,9 +192,9 @@ let timer: number;
 let numHit: number;
 
 // ランダム整数取得
-document.onselectstart = () => false;
 const randRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
 
+document.onselectstart = () => false;
 // ------------------------------------------------------------
 // メイン処理
 // ------------------------------------------------------------
@@ -207,7 +212,7 @@ function startGame() {
   levelText.value = alyLevel[numLevel];
   numEffect = Math.floor(Math.random() * alyEffectDown.length);
   mscEffect2.src = alyEffectDown[numEffect];
-
+  // 背景、音楽設定
   imgBack.value = "url(" + aly_backimg[numLevel] + ")";
   backMusic.src = alyBackMusic[numLevel];
   backMusic.volume = volumeBack;
@@ -258,7 +263,6 @@ async function hithyoji() {
       top: Math.floor(Math.random() * (document.body.clientHeight - 150)) + 'px'
     }
   };
-  console.log('hithyoji', imgHit)
   imgGroup.value.push(imgHit);
   // 出現音
   mscEffect1.currentTime = 0;
@@ -283,7 +287,6 @@ async function hithyoji() {
   });
   // 消えるまでの時間
   setTimeout(() => {
-    // imgHit.remove();
     imgGroup.value = imgGroup.value.filter(target => target.id !== imgHit.id);
   }, numDsplist[numLevel]);
   // }
@@ -311,12 +314,10 @@ const clickImg = (imgHit: { id: string, num: number, src: string, style: any }, 
   };
   effectGroup.value.push(imgEffect);
 
-  console.log('clickImg', imgEffect)
-
   setTimeout(() => {
-    // img_eft.remove();
     effectGroup.value = effectGroup.value.filter(target => target.id !== imgEffect.id);
   }, 500);
+
   // 鬼の場合、HP減
   if (imgHit.num <= 4) {
     alyHp[imgHit.num]++;
@@ -343,7 +344,6 @@ const clickImg = (imgHit: { id: string, num: number, src: string, style: any }, 
     // 消えるまでの時間
     setTimeout(() => {
       imgGroup.value = imgGroup.value.filter(target => target.id !== imgHit.id);
-      // img_hit.remove();
     }, numAprMax[numLevel]);
     // スコア加算
     if (imgHit.num > 4) {
@@ -356,7 +356,6 @@ const clickImg = (imgHit: { id: string, num: number, src: string, style: any }, 
     fnclvlup1();
   }
 }
-
 // ------------------------------------------------------------
 // 特種技
 // ------------------------------------------------------------
@@ -371,25 +370,22 @@ function fncimgult() {
   // 全標的取得
   setTimeout(() => {
     mscEffect2.play();
-    // 全標的を取得
-    let aly_allhit: HTMLCollection
-    aly_allhit = imgArea.value!.getElementsByTagName('img');
-    for (let i = 0; i < aly_allhit.length; i++) {
-      anime({
-        targets: aly_allhit[i],
-        translateX: randRange(-500, 500),
-        translateY: randRange(-500, 500),
-        rotate: '1.8turn',
-        scale: [1, 0.4],
-        duration: numAprMax[numLevel],
-        easing: 'easeOutExpo',
-      });
-      // スコア加算
-      if (Number(aly_allhit[i].id) > 4) {
+    anime({
+      targets: '.imgGroup',
+      translateX: randRange(-500, 500),
+      translateY: randRange(-500, 500),
+      rotate: '1.8turn',
+      scale: [1, 0.4],
+      duration: numAprMax[numLevel],
+      easing: 'easeOutExpo',
+    });
+    // ターゲット毎にスコア加算
+    for (let image of imgGroup.value) {
+      if (image.num > 4) {
         score++;
       } else {
-        score += alyHp[Number(aly_allhit[i].id)] * 2;
-        alyHp[Number(aly_allhit[i].id)] = 0;
+        score += alyHp[image.num] * 2;
+        alyHp[image.num] = 0;
       }
       fnclvlup1();
     }
@@ -435,14 +431,12 @@ function fnclvlup2() {
 // クリック時の処理
 // ------------------------------------------------------------
 const isHummer = ref(false)
-// const hummerId = ref()
 function clickScreen(event: MouseEvent) {
   // 叩いた音
   mscEffect3.currentTime = 0;
   mscEffect3.play();
   //ハンマーを表示
-  console.log('clickScreen', event.clientX, event.clientY)
-  hummerStyle.value = { position: 'fixed', top: event.clientY - 40 + `px`, left: event.clientX - 40 + `px` };
+  hummerStyle.value = { position: 'fixed', top: event.clientY - 40 + `px`, left: event.clientX - 40 + `px` }
   isHummer.value = true
   // 画像の回転
   anime({
@@ -461,7 +455,6 @@ function clickScreen(event: MouseEvent) {
   // ミリ秒後に消える
   setTimeout(() => {
     isHummer.value = false
-    // img_hummer.remove();
   }, 250);
 };
 
@@ -525,7 +518,6 @@ function clickScreen(event: MouseEvent) {
 
 progress {
   width: 180px;
-  /* background-color: orange; */
 }
 
 .posiStart {
@@ -536,7 +528,6 @@ progress {
 }
 
 .btnStart {
-  /* bottom:; */
   padding: 10px 30PX;
   margin: 5px 10px;
   font-family: 'Fourkid', sans-serif;
@@ -553,7 +544,6 @@ progress {
   -webkit-text-stroke: 2px #000050;
 }
 
-/* CSSアニメーションの設定 */
 @keyframes skew {
   0% {
     opacity: 0;
@@ -594,11 +584,6 @@ progress {
   -webkit-text-stroke: 2px #000050;
 }
 
-.container {
-  width: 10px;
-  height: 10px;
-  display: flex;
-}
 
 .imgGroup {
   animation: fadeIn 0.5s;
