@@ -225,7 +225,10 @@ function startGame() {
   // 終了処理
   setTimeout(() => {
     clearTimeout(timer);
-    imgArea.value!.textContent = null;
+    // imgArea.value!.textContent = null;
+    imgArea.value = null;
+    imgGroup.value = []
+    effectGroup.value = []
     backMusic.src = msc_back6;
     backMusic.play();
     isGameEnd.value = true;
