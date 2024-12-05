@@ -4,6 +4,7 @@ html {
   user-select: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  color: #FFFF99;
 }
 
 html::-webkit-scrollbar {

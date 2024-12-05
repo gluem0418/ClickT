@@ -1,48 +1,3 @@
-<template>
-  <div class="field" @click="clickScreen($event)">
-
-    <div class="box1">
-      <span>SCORE:</span>
-      <span>{{ scoreText }}</span>
-    </div>
-
-    <div class="box1">
-      <span>{{ levelText }}</span>
-    </div>
-
-    <div class="box2">
-      <label>TIME:</label>
-      <output :value="timeCnt"></output>
-      <span>&nbsp;</span>
-      <progress :value="timeBar" max="60"></progress>
-    </div>
-
-    <div v-if="isProcessing" class="posiStart">
-      <button @click="startGame()" class="btnStart">START</button>
-    </div>
-
-    <div v-if="isGameEnd">
-      <div class="endText" id="gameEnd">GAME END</div>
-      <div class="endText" id="scoreEnd">
-        <span>SCORE:</span>
-        <span>{{ scoreText }}</span>
-      </div>
-    </div>
-
-
-    <div class="container" ref="imgArea">
-      <img v-for="img in imgGroup" :key="img.id" :src="img.src" :style="img.style" :id="'img-' + img.id"
-        @click="clickImg(img, $event)" class="imgGroup" />
-    </div>
-
-    <img v-if="isSpecial" :src="imgAnpan" class="imgSpecial">
-
-    <img v-show="isHummer" :src="hitHummer" :style="hummerStyle" class="imgHummer">
-
-    <img v-for="(img, index) in effectGroup" :key="'eft' + index" :src="img.src" :style="img.style">
-
-  </div>
-</template>
 
 <script setup lang="ts">
 
@@ -160,6 +115,7 @@ const effectGroup = ref<Array<{ id: string, src: string, style: any }>>([]);
 // ハンマー画像
 const hummerStyle = ref<any>({ position: 'fixed', top: '0px', left: '0px' });
 
+const isInitStart = ref(true);
 const isProcessing = ref(true);
 const scoreText = ref(0);
 const levelText = ref("EASY");
@@ -207,6 +163,7 @@ function startGame() {
   count = intTime;
   idTimeout = 0;
   isProcessing.value = false;
+  isInitStart.value = false;
   isGameEnd.value = false;
   scoreText.value = 0;
   levelText.value = alyLevel[numLevel];
@@ -463,6 +420,55 @@ function clickScreen(event: MouseEvent) {
 
 </script>
 
+<template>
+  <div class="field" @click="clickScreen($event)">
+
+    <div class="box1">
+      <span>SCORE:</span>
+      <span>{{ scoreText }}</span>
+    </div>
+
+    <div class="box1">
+      <span>{{ levelText }}</span>
+    </div>
+
+    <div class="box2">
+      <label>TIME:</label>
+      <output :value="timeCnt"></output>
+      <span>&nbsp;</span>
+      <progress :value="timeBar" max="60"></progress>
+    </div>
+
+    <div v-if="isInitStart">
+      <div class="msgStart">Music plays in this site</div>
+    </div>
+
+    <div v-if="isProcessing" class="posiStart">
+      <button @click="startGame()" class="btnStart">START</button>
+    </div>
+
+    <div v-if="isGameEnd">
+      <div class="endText" id="gameEnd">GAME END</div>
+      <div class="endText" id="scoreEnd">
+        <span>SCORE:</span>
+        <span>{{ scoreText }}</span>
+      </div>
+    </div>
+
+    <div class="container" ref="imgArea">
+      <img v-for="img in imgGroup" :key="img.id" :src="img.src" :style="img.style" :id="'img-' + img.id"
+        @click="clickImg(img, $event)" class="imgGroup" />
+    </div>
+
+    <img v-if="isSpecial" :src="imgAnpan" class="imgSpecial">
+
+    <img v-show="isHummer" :src="hitHummer" :style="hummerStyle" class="imgHummer">
+
+    <img v-for="(img, index) in effectGroup" :key="'eft' + index" :src="img.src" :style="img.style">
+
+  </div>
+</template>
+
 <style scoped>
 .field {
   background-image: v-bind(imgBack);
@@ -480,7 +486,7 @@ function clickScreen(event: MouseEvent) {
 }
 
 .box1 {
-  color: #FFFF99;
+  /* color: #FFFF99; */
   background: #000050;
   /* border: solid 4px #fd9535; */
   border: solid 3px #FFFF99;
@@ -495,7 +501,7 @@ function clickScreen(event: MouseEvent) {
 }
 
 .box2 {
-  color: #FFFF99;
+  /* color: #FFFF99; */
   background: #000050;
   border: solid 3px #FFFF99;
   /*線*/
@@ -521,6 +527,13 @@ function clickScreen(event: MouseEvent) {
 
 progress {
   width: 180px;
+}
+
+.msgStart {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
 }
 
 .posiStart {
